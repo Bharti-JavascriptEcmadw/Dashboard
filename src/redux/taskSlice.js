@@ -21,21 +21,22 @@ const tasksSlice = createSlice({
   reducers: {
     addTask: (state, action) => {
       const { task, column } = action.payload;
+      console.log("Adding task", task, column);  // Log task details
       state[column].push(task);
+      localStorage.setItem('tasks', JSON.stringify(state));  // Persisting updated state to localStorage
     },
     moveTask: (state, action) => {
       const { task, fromColumn, toColumn } = action.payload;
       state[fromColumn] = state[fromColumn].filter((t) => t.id !== task.id);
       state[toColumn].push(task);
+      localStorage.setItem('tasks', JSON.stringify(state)); // Persisting updated state
     },
     setTasks: (state, action) => {
-      state = action.payload; // Directly set tasks from Local Storage or other source
+      console.log("Setting tasks from localStorage", action.payload);
+      return action.payload; // Directly set tasks from Local Storage or other source
     },
   },
 });
 
-// Actions
 export const { addTask, moveTask, setTasks } = tasksSlice.actions;
-
-// Reducer
 export default tasksSlice.reducer;

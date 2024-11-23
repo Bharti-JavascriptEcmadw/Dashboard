@@ -60,8 +60,8 @@ const TaskColumn = ({ title, tasks, addTask, provided }) => {
 
   return (
     <div
-      ref={provided.innerRef}  // Use innerRef here
-      {...provided.droppableProps}  // Spread droppableProps here
+      ref={provided.innerRef} // Use innerRef here
+      {...provided.droppableProps} // Spread droppableProps here
       className="w-full sm:w-80 md:w-96 lg:w-1/3 p-6 bg-gray-50 rounded-lg shadow-lg"
     >
       <h3 className="text-2xl font-semibold text-gray-700 mb-6">{title}</h3>
@@ -71,9 +71,9 @@ const TaskColumn = ({ title, tasks, addTask, provided }) => {
         <Draggable key={task.id} draggableId={task.id} index={index}>
           {(provided) => (
             <div
-              ref={provided.innerRef}  // Set innerRef here for each draggable
-              {...provided.draggableProps}  // Spread draggableProps
-              {...provided.dragHandleProps}  // Spread dragHandleProps
+              ref={provided.innerRef} // Set innerRef here for each draggable
+              {...provided.draggableProps} // Spread draggableProps
+              {...provided.dragHandleProps} // Spread dragHandleProps
               className="mb-6"
             >
               <TaskCard {...task} />
@@ -91,7 +91,7 @@ const TaskColumn = ({ title, tasks, addTask, provided }) => {
         Add Task
       </Button>
 
-      {provided.placeholder}  {/* Important for maintaining space when dragging */}
+      {provided.placeholder} {/* Important for maintaining space when dragging */}
 
       {/* Modal Popup for Adding Task */}
       {isModalOpen && (
