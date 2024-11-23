@@ -10,7 +10,7 @@ import Filter from '../Components/Filter';
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const tasks = useSelector((state) => state.tasks);
+  const tasks = useSelector((state) => state.tasks.tasks); // Access the tasks array from state
 
   const [filter, setFilter] = useState({
     priority: '',
@@ -20,7 +20,7 @@ const Dashboard = () => {
 
   // Handle adding a task
   const handleAddTask = (task, column) => {
-    dispatch(addTask({ task, column }));
+    dispatch(addTask({ ...task, status: column }));
   };
 
   // Handle drag and drop
@@ -33,9 +33,9 @@ const Dashboard = () => {
       return;
     }
 
-    const movedTask = tasks[source.droppableId][source.index];
+    const movedTask = tasks.find((task) => task.id === result.draggableId);
 
-    dispatch(moveTask({ task: movedTask, fromColumn: source.droppableId, toColumn: destination.droppableId }));
+    dispatch(moveTask({ id: movedTask.id, newStatus: destination.droppableId }));
   };
 
   // Handle filter change
@@ -50,14 +50,20 @@ const Dashboard = () => {
 
   // Filter tasks based on the selected filter values
   const filterTasks = (columnTasks) => {
+    if (!columnTasks) return [];
     return columnTasks.filter((task) => {
       return (
         (filter.priority ? task.priority === filter.priority : true) &&
-        (filter.category ? task.category.toLowerCase().includes(filter.category.toLowerCase()) : true) &&
+        (filter.category ? task.category?.toLowerCase().includes(filter.category.toLowerCase()) : true) &&
         (filter.dueDate ? task.dueDate === filter.dueDate : true)
       );
     });
   };
+
+  // Separate tasks by status for rendering
+  const todoTasks = tasks.filter((task) => task.status === 'To Do');
+  const inProgressTasks = tasks.filter((task) => task.status === 'In Progress');
+  const doneTasks = tasks.filter((task) => task.status === 'Done');
 
   return (
     <div className="flex h-screen">
@@ -80,12 +86,12 @@ const Dashboard = () => {
           <DragDropContext onDragEnd={handleOnDragEnd}>
             <div className="flex justify-between space-x-4">
               {/* To Do Column */}
-              <Droppable droppableId="todo">
+              <Droppable droppableId="To Do">
                 {(provided) => (
                   <TaskColumn
                     title="To Do"
-                    tasks={filterTasks(tasks.todo)}
-                    addTask={(task) => handleAddTask(task, 'todo')}
+                    tasks={filterTasks(todoTasks)}
+                    addTask={(task) => handleAddTask(task, 'To Do')}
                     innerRef={provided.innerRef}
                     provided={provided}
                     {...provided.droppableProps}
@@ -94,12 +100,12 @@ const Dashboard = () => {
               </Droppable>
 
               {/* In Progress Column */}
-              <Droppable droppableId="inProgress">
+              <Droppable droppableId="In Progress">
                 {(provided) => (
                   <TaskColumn
                     title="In Progress"
-                    tasks={filterTasks(tasks.inProgress)}
-                    addTask={(task) => handleAddTask(task, 'inProgress')}
+                    tasks={filterTasks(inProgressTasks)}
+                    addTask={(task) => handleAddTask(task, 'In Progress')}
                     innerRef={provided.innerRef}
                     provided={provided}
                     {...provided.droppableProps}
@@ -108,12 +114,12 @@ const Dashboard = () => {
               </Droppable>
 
               {/* Done Column */}
-              <Droppable droppableId="done">
+              <Droppable droppableId="Done">
                 {(provided) => (
                   <TaskColumn
                     title="Done"
-                    tasks={filterTasks(tasks.done)}
-                    addTask={(task) => handleAddTask(task, 'done')}
+                    tasks={filterTasks(doneTasks)}
+                    addTask={(task) => handleAddTask(task, 'Done')}
                     innerRef={provided.innerRef}
                     provided={provided}
                     {...provided.droppableProps}
