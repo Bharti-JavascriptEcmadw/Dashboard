@@ -65,6 +65,9 @@ const Dashboard = () => {
   const inProgressTasks = tasks.filter((task) => task.status === 'In Progress');
   const doneTasks = tasks.filter((task) => task.status === 'Done');
 
+
+ 
+
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
